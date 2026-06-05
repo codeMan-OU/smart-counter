@@ -1,0 +1,23 @@
+{
+  "source_type": "file",
+  "source_path": "video/smart-counter-video-test.mp4",
+  "usb_index": 0,
+  "model_path": "PTmodel/522-best-A_production_line.pt",
+  "count_mode": "trip_wire",
+  "roi_points": [],
+  "wire_points": [
+    0.621875,
+    0.1763888888888889,
+    0.62734375,
+    0.7861111111111111
+  ],
+  "csv_dir": "logs",
+  "loop_video": true,
+  "voice_prompt_enabled": true,
+  "confidence_threshold": 0.5,
+  "count_with_b_name": "範例:母豬(B特徵模擬)",
+  "count_no_b_name": "範例:公豬",
+  "last_count": 28,
+  "last_count_with_b": 11,
+  "last_count_no_b": 17
+}

@@ -1,0 +1,967 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI智捷方舟-AI 計數系統 使用說明</title>
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --surface: #ffffff;
+      --surface-2: #eef3f7;
+      --ink: #17202a;
+      --muted: #647181;
+      --line: #d7e0e9;
+      --brand: #126d7a;
+      --brand-2: #0f8a72;
+      --accent: #c26a20;
+      --danger: #b4433c;
+      --code-bg: #17202a;
+      --code-ink: #ecf3f8;
+      --shadow: 0 16px 44px rgba(23, 32, 42, 0.10);
+      --radius: 8px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "Microsoft JhengHei", "PingFang TC", "Noto Sans TC", Arial, sans-serif;
+      line-height: 1.68;
+    }
+
+    a {
+      color: var(--brand);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .shell {
+      min-height: 100vh;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      border-bottom: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(12px);
+    }
+
+    .topbar-inner {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-mark {
+      width: 42px;
+      height: 42px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--surface);
+      object-fit: contain;
+      padding: 4px;
+    }
+
+    .brand-text {
+      min-width: 0;
+    }
+
+    .brand-title {
+      font-size: 17px;
+      font-weight: 800;
+      line-height: 1.2;
+      margin: 0;
+    }
+
+    .brand-subtitle {
+      margin: 2px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .doc-layout {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 24px 20px 56px;
+      display: grid;
+      grid-template-columns: 260px minmax(0, 1fr);
+      gap: 22px;
+    }
+
+    .tabs {
+      position: sticky;
+      top: 82px;
+      align-self: start;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 10px;
+    }
+
+    .tab-button {
+      width: 100%;
+      border: 0;
+      border-radius: 6px;
+      padding: 10px 12px;
+      margin: 2px 0;
+      text-align: left;
+      color: var(--ink);
+      background: transparent;
+      font: inherit;
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .tab-button:hover {
+      background: var(--surface-2);
+    }
+
+    .tab-button[aria-selected="true"] {
+      background: #dff1ef;
+      color: #0b5b52;
+      font-weight: 800;
+    }
+
+    .tab-pill {
+      display: inline-flex;
+      min-width: 28px;
+      justify-content: center;
+      border-radius: 999px;
+      background: rgba(18, 109, 122, 0.12);
+      color: var(--brand);
+      font-size: 11px;
+      padding: 1px 7px;
+    }
+
+    .content {
+      min-width: 0;
+    }
+
+    .panel {
+      display: none;
+      animation: fadeIn 0.18s ease-out;
+    }
+
+    .panel.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .hero-media {
+      min-height: 270px;
+      background:
+        linear-gradient(90deg, rgba(23, 32, 42, 0.82), rgba(23, 32, 42, 0.36)),
+        url("gui/test.jpg") center / cover no-repeat;
+      color: #fff;
+      padding: 34px;
+      display: flex;
+      align-items: flex-end;
+    }
+
+    .hero h1 {
+      margin: 0;
+      font-size: 38px;
+      line-height: 1.16;
+      letter-spacing: 0;
+    }
+
+    .hero p {
+      max-width: 740px;
+      margin: 12px 0 0;
+      color: #e8eef3;
+      font-size: 16px;
+    }
+
+    .hero-footer {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border-top: 1px solid var(--line);
+      background: #fbfcfd;
+    }
+
+    .stat {
+      padding: 18px 20px;
+      border-right: 1px solid var(--line);
+    }
+
+    .stat:last-child {
+      border-right: 0;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 18px;
+      color: var(--ink);
+    }
+
+    .stat span {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .section {
+      margin-top: 18px;
+      padding: 26px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .section h2,
+    .section h3 {
+      margin: 0 0 12px;
+      line-height: 1.25;
+      letter-spacing: 0;
+    }
+
+    .section h2 {
+      font-size: 25px;
+    }
+
+    .section h3 {
+      font-size: 18px;
+      margin-top: 22px;
+    }
+
+    .section p {
+      margin: 8px 0;
+      color: #2c3845;
+    }
+
+    .lead {
+      color: #334252;
+      font-size: 16px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 14px;
+    }
+
+    .grid-3 {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fbfcfd;
+      padding: 16px;
+      min-width: 0;
+    }
+
+    .card h3 {
+      margin: 0 0 8px;
+      font-size: 16px;
+    }
+
+    .card p {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: #405060;
+      padding: 3px 10px;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .callout {
+      margin: 16px 0;
+      border-left: 4px solid var(--brand);
+      background: #e8f5f3;
+      padding: 14px 16px;
+      border-radius: 0 8px 8px 0;
+    }
+
+    .callout.warning {
+      border-left-color: var(--accent);
+      background: #fff4e8;
+    }
+
+    .callout.danger {
+      border-left-color: var(--danger);
+      background: #fff0ef;
+    }
+
+    .steps {
+      counter-reset: step;
+      list-style: none;
+      padding: 0;
+      margin: 16px 0 0;
+    }
+
+    .steps li {
+      counter-increment: step;
+      position: relative;
+      padding: 0 0 16px 42px;
+      border-left: 1px solid var(--line);
+      margin-left: 15px;
+    }
+
+    .steps li::before {
+      content: counter(step);
+      position: absolute;
+      left: -15px;
+      top: 0;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: var(--brand);
+      color: #fff;
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      font-size: 13px;
+    }
+
+    .steps li:last-child {
+      border-left-color: transparent;
+      padding-bottom: 0;
+    }
+
+    .steps strong {
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    pre {
+      margin: 14px 0;
+      padding: 16px;
+      overflow-x: auto;
+      background: var(--code-bg);
+      color: var(--code-ink);
+      border-radius: var(--radius);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    code {
+      font-family: Consolas, "Cascadia Mono", "Noto Sans Mono", monospace;
+    }
+
+    :not(pre) > code {
+      background: #eef3f7;
+      border: 1px solid #d9e3ea;
+      border-radius: 5px;
+      padding: 1px 5px;
+      color: #21313f;
+      font-size: 0.94em;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 14px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      overflow: hidden;
+      display: table;
+    }
+
+    th,
+    td {
+      border-bottom: 1px solid var(--line);
+      padding: 11px 12px;
+      text-align: left;
+      vertical-align: top;
+      font-size: 14px;
+    }
+
+    th {
+      background: #eef3f7;
+      color: #2f3d4b;
+      font-weight: 800;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .architecture {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(120px, 1fr));
+      gap: 10px;
+      align-items: stretch;
+      margin-top: 18px;
+    }
+
+    .node {
+      background: #fbfcfd;
+      border: 1px solid var(--line);
+      border-top: 4px solid var(--brand);
+      border-radius: var(--radius);
+      padding: 14px;
+      min-height: 108px;
+    }
+
+    .node strong {
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .node span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .arrow {
+      display: none;
+    }
+
+    .image-frame {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: #fff;
+      margin-top: 16px;
+    }
+
+    .image-frame img {
+      width: 100%;
+      display: block;
+    }
+
+    .caption {
+      padding: 10px 12px;
+      color: var(--muted);
+      font-size: 13px;
+      border-top: 1px solid var(--line);
+      background: #fbfcfd;
+    }
+
+    .footer {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 0 20px 32px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    @media (max-width: 980px) {
+      .doc-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .tabs {
+        position: static;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .hero-footer,
+      .grid,
+      .grid-3,
+      .architecture {
+        grid-template-columns: 1fr;
+      }
+
+      .stat {
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .stat:last-child {
+        border-bottom: 0;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .topbar-inner,
+      .doc-layout {
+        padding-left: 14px;
+        padding-right: 14px;
+      }
+
+      .tabs {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-media {
+        min-height: 300px;
+        padding: 24px;
+      }
+
+      .hero h1 {
+        font-size: 30px;
+      }
+
+      .section {
+        padding: 20px;
+      }
+
+      table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+      }
+    }
+
+    @media print {
+      .topbar,
+      .tabs {
+        position: static;
+      }
+
+      .doc-layout {
+        display: block;
+      }
+
+      .panel {
+        display: block;
+        break-inside: avoid;
+      }
+
+      .section,
+      .hero {
+        box-shadow: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <div class="topbar-inner">
+        <img class="brand-mark" src="gui/logo.png" alt="AI智捷方舟標誌">
+        <div class="brand-text">
+          <p class="brand-title">AI智捷方舟-AI 計數系統</p>
+          <p class="brand-subtitle">YOLOv8 + ByteTrack 工業影像計數平台使用說明</p>
+        </div>
+      </div>
+    </header>
+
+    <main class="doc-layout">
+      <nav class="tabs" aria-label="文件分頁" role="tablist">
+        <button class="tab-button" role="tab" aria-selected="true" aria-controls="overview" id="tab-overview" data-tab="overview">系統總覽 <span class="tab-pill">01</span></button>
+        <button class="tab-button" role="tab" aria-selected="false" aria-controls="features" id="tab-features" data-tab="features">功能特色 <span class="tab-pill">02</span></button>
+        <button class="tab-button" role="tab" aria-selected="false" aria-controls="install" id="tab-install" data-tab="install">安裝啟動 <span class="tab-pill">03</span></button>
+        <button class="tab-button" role="tab" aria-selected="false" aria-controls="workflow" id="tab-workflow" data-tab="workflow">操作流程 <span class="tab-pill">04</span></button>
+        <button class="tab-button" role="tab" aria-selected="false" aria-controls="counting" id="tab-counting" data-tab="counting">計數邏輯 <span class="tab-pill">05</span></button>
+        <button class="tab-button" role="tab" aria-selected="false" aria-controls="settings" id="tab-settings" data-tab="settings">設定說明 <span class="tab-pill">06</span></button>
+        <button class="tab-button" role="tab" aria-selected="false" aria-controls="output" id="tab-output" data-tab="output">輸出資料 <span class="tab-pill">07</span></button>
+        <button class="tab-button" role="tab" aria-selected="false" aria-controls="architecture" id="tab-architecture" data-tab="architecture">程式架構 <span class="tab-pill">08</span></button>
+        <button class="tab-button" role="tab" aria-selected="false" aria-controls="faq" id="tab-faq" data-tab="faq">疑難排解 <span class="tab-pill">09</span></button>
+      </nav>
+
+      <div class="content">
+        <section class="panel active" id="overview" role="tabpanel" aria-labelledby="tab-overview">
+          <div class="hero">
+            <div class="hero-media">
+              <div>
+                <h1>AI智捷方舟-AI 計數系統</h1>
+                <p>這是一套跨 Windows 11 與 Ubuntu 22.04 執行的工業影像計數程式，整合 YOLOv8 偵測、ByteTrack 追蹤、Trip Wire / ROI 計數、A/B 類別分流、語音提示與 CSV 記錄。</p>
+              </div>
+            </div>
+            <div class="hero-footer">
+              <div class="stat"><strong>YOLOv8</strong><span>物件偵測模型</span></div>
+              <div class="stat"><strong>ByteTrack</strong><span>跨幀追蹤 ID</span></div>
+              <div class="stat"><strong>PyQt5</strong><span>桌面操作介面</span></div>
+              <div class="stat"><strong>CSV</strong><span>計數事件紀錄</span></div>
+            </div>
+          </div>
+
+          <div class="section">
+            <h2>系統定位</h2>
+            <p class="lead">本系統用於即時或離線影片中的目標計數。主要目標類別為 <code>A</code>，次要判斷類別為 <code>B</code>。當 A 通過指定絆線或進入 ROI 區域時，系統會計入一次，並判斷當下 A 的框內是否含有 B。</p>
+            <div class="tag-row">
+              <span class="tag">本地影片</span>
+              <span class="tag">RTSP 串流</span>
+              <span class="tag">USB 攝影機</span>
+              <span class="tag">Trip Wire</span>
+              <span class="tag">ROI Enter</span>
+              <span class="tag">語音提示</span>
+              <span class="tag">輪播模式</span>
+            </div>
+            <div class="callout">
+              目前程式入口為 <code>mainAPP.py</code>。若要啟動 GUI，請在專案根目錄執行 <code>python mainAPP.py</code>。
+            </div>
+          </div>
+        </section>
+
+        <section class="panel" id="features" role="tabpanel" aria-labelledby="tab-features">
+          <div class="section">
+            <h2>功能特色</h2>
+            <div class="grid grid-3">
+              <div class="card">
+                <h3>雙類別判斷</h3>
+                <p>A 類別負責主計數，B 類別作為輔助條件。系統可分別統計「含 B 的 A」與「無 B 的 A」。</p>
+              </div>
+              <div class="card">
+                <h3>追蹤 ID 重映射</h3>
+                <p>ByteTrack 原始 ID 會被映射成 A 專屬連續 ID，避免 B 佔用追蹤序列後造成 A 的 ID 跳號。</p>
+              </div>
+              <div class="card">
+                <h3>一次推論分流</h3>
+                <p>每幀只呼叫一次 YOLO 追蹤流程，同時偵測 A/B，再依類別分流，降低閃爍與 ID 不穩定風險。</p>
+              </div>
+              <div class="card">
+                <h3>多種來源</h3>
+                <p>支援本地影片檔、RTSP 網路串流、USB 攝影機。影片檔可開啟輪播，播完自動重播並持續累計。</p>
+              </div>
+              <div class="card">
+                <h3>互動式 ROI / 絆線</h3>
+                <p>可在預覽畫面上直接用滑鼠設定 ROI 多邊形或 Trip Wire 線段，座標以 0 到 1 的比例儲存。</p>
+              </div>
+              <div class="card">
+                <h3>事件式輸出</h3>
+                <p>只有發生新計數事件時才寫入 CSV，也只有新事件才觸發語音提示，避免同一物件重複播報。</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="section">
+            <h2>畫面組成</h2>
+            <div class="image-frame">
+              <img src="gui/test.jpg" alt="AI 計數系統畫面示意">
+              <div class="caption">畫面左側顯示影像、偵測框、ROI 與 Trip Wire；右側提供來源設定、模型設定、操作按鈕與計數儀表板。</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel" id="install" role="tabpanel" aria-labelledby="tab-install">
+          <div class="section">
+            <h2>安裝與啟動</h2>
+            <p class="lead">專案目前已可在 Windows 11 與 Ubuntu 22.04 運行。以下指令以專案根目錄為執行位置。</p>
+
+            <h3>1. 建議環境</h3>
+            <table>
+              <thead>
+                <tr><th>項目</th><th>建議版本</th><th>說明</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>作業系統</td><td>Windows 11 / Ubuntu 22.04</td><td>已依目前專案狀態支援兩平台。</td></tr>
+                <tr><td>Python</td><td>3.9 以上</td><td>目前已有 Python 3.9 編譯檢查紀錄。</td></tr>
+                <tr><td>GPU</td><td>可選</td><td>有 CUDA GPU 可加速 YOLO 推論；CPU 亦可執行但速度較低。</td></tr>
+              </tbody>
+            </table>
+
+            <h3>2. 安裝依賴</h3>
+            <pre><code>pip install -r requirements.txt</code></pre>
+
+            <p>主要依賴如下：</p>
+            <pre><code>ultralytics&gt;=8.2.0
+opencv-python&gt;=4.9.0
+PyQt5&gt;=5.15.0
+numpy&gt;=1.24.0</code></pre>
+
+            <h3>3. 啟動程式</h3>
+            <pre><code>python mainAPP.py</code></pre>
+
+            <div class="callout warning">
+              若使用 RTSP，請確認 OpenCV 的 FFmpeg 後端可用，且網路、防火牆與攝影機帳密設定正確。
+            </div>
+          </div>
+        </section>
+
+        <section class="panel" id="workflow" role="tabpanel" aria-labelledby="tab-workflow">
+          <div class="section">
+            <h2>標準操作流程</h2>
+            <ol class="steps">
+              <li>
+                <strong>選擇影像來源</strong>
+                選擇本地影片、RTSP 串流或 USB 攝影機。本地影片需指定檔案路徑；RTSP 需輸入串流 URL；USB 需選擇攝影機編號。
+              </li>
+              <li>
+                <strong>選擇 YOLO 模型</strong>
+                指定 <code>.pt</code> 權重檔，例如目前專案中的 <code>PTmodel/522-best-A_production_line.pt</code>。
+              </li>
+              <li>
+                <strong>按下預覽</strong>
+                本地影片會顯示第一幀；RTSP / USB 會顯示即時預覽。預覽時即可繪製 ROI 或 Trip Wire。
+              </li>
+              <li>
+                <strong>設定計數模式</strong>
+                若使用模式 A，請繪製 Trip Wire；若使用模式 B，請繪製 ROI 多邊形。
+              </li>
+              <li>
+                <strong>開始推論</strong>
+                按下開始後，系統會載入模型、建立推論執行緒、開始偵測與計數。
+              </li>
+              <li>
+                <strong>查看計數與紀錄</strong>
+                Dashboard 會顯示總計數、含 B、無 B、FPS 與事件歷史；CSV 會在首次計數事件發生時建立。
+              </li>
+            </ol>
+          </div>
+
+          <div class="section">
+            <h2>ROI 與 Trip Wire 繪製方式</h2>
+            <div class="grid">
+              <div class="card">
+                <h3>Trip Wire</h3>
+                <p>點擊「繪製絆線」後，在影像上依序點擊兩個點。系統會用這兩點建立線段，並在 Trip Wire 模式下判斷 A 是否穿越。</p>
+              </div>
+              <div class="card">
+                <h3>ROI 多邊形</h3>
+                <p>點擊「繪製 ROI」後，用左鍵新增頂點，至少三點後用右鍵封閉多邊形。A 的中心點進入 ROI 時可觸發計數。</p>
+              </div>
+            </div>
+            <div class="callout">
+              ROI 與 Trip Wire 座標會以正規化比例儲存在 <code>settings.json</code>，不同解析度的來源仍可維持相對位置。
+            </div>
+          </div>
+        </section>
+
+        <section class="panel" id="counting" role="tabpanel" aria-labelledby="tab-counting">
+          <div class="section">
+            <h2>計數邏輯</h2>
+            <h3>模式 A：Trip Wire 穿越計數</h3>
+            <p>系統記錄每個 A 物件上一幀與目前幀的中心點，透過線段兩側的 cross product 符號判斷是否穿越 Trip Wire。現行邏輯只在物件向右移動時觸發計數，也就是 <code>dx &gt; 0</code>。</p>
+
+            <h3>模式 B：ROI Enter 進入計數</h3>
+            <p>系統以 OpenCV <code>pointPolygonTest</code> 判斷 A 物件中心點是否落在 ROI 多邊形內或邊界上。進入 ROI 時，若該追蹤 ID 尚未被計數，就新增一次事件。</p>
+
+            <h3>A/B 關聯判斷</h3>
+            <p>當 A 觸發計數時，系統會檢查是否有任一 B 的中心點位於該 A 的 BBox 內。若有，這次事件歸類為「含 B」；否則歸類為「無 B」。</p>
+
+            <table>
+              <thead>
+                <tr><th>狀態</th><th>畫面顏色</th><th>統計歸屬</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>A 尚未計數</td><td>黃色框</td><td>尚不列入總數</td></tr>
+                <tr><td>A 已計數且含 B</td><td>綠色框</td><td>總計數 + 含 B 計數</td></tr>
+                <tr><td>A 已計數且無 B</td><td>藍色框</td><td>總計數 + 無 B 計數</td></tr>
+                <tr><td>B 物件</td><td>青色框</td><td>只作為 A 的輔助判斷，不單獨計數</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="panel" id="settings" role="tabpanel" aria-labelledby="tab-settings">
+          <div class="section">
+            <h2>設定說明</h2>
+            <p class="lead">系統設定儲存在專案根目錄的 <code>settings.json</code>，GUI 啟動時會自動載入，操作中也會在必要時保存。</p>
+            <table>
+              <thead>
+                <tr><th>欄位</th><th>用途</th><th>範例</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><code>source_type</code></td><td>影像來源類型</td><td><code>file</code> / <code>rtsp</code> / <code>usb</code></td></tr>
+                <tr><td><code>source_path</code></td><td>影片檔路徑或 RTSP URL</td><td><code>video/smart-counter-video-test.mp4</code></td></tr>
+                <tr><td><code>usb_index</code></td><td>USB 攝影機編號</td><td><code>0</code></td></tr>
+                <tr><td><code>model_path</code></td><td>YOLO 權重路徑</td><td><code>PTmodel/... .pt</code></td></tr>
+                <tr><td><code>count_mode</code></td><td>計數模式</td><td><code>trip_wire</code> / <code>roi_enter</code></td></tr>
+                <tr><td><code>roi_points</code></td><td>ROI 多邊形正規化座標</td><td><code>[[0.2, 0.3], [0.7, 0.3], ...]</code></td></tr>
+                <tr><td><code>wire_points</code></td><td>Trip Wire 正規化座標</td><td><code>[x1, y1, x2, y2]</code></td></tr>
+                <tr><td><code>csv_dir</code></td><td>CSV 輸出資料夾</td><td><code>logs</code></td></tr>
+                <tr><td><code>loop_video</code></td><td>本地影片播完後是否輪播</td><td><code>true</code></td></tr>
+                <tr><td><code>voice_prompt_enabled</code></td><td>是否啟用語音提示</td><td><code>true</code></td></tr>
+                <tr><td><code>last_count</code></td><td>上次保存的總計數</td><td><code>17</code></td></tr>
+              </tbody>
+            </table>
+
+            <h3>模型類別名稱</h3>
+            <p>目前主要類別名稱設定在 <code>config.py</code>：</p>
+            <pre><code>TARGET_CLASS_NAME = "A"
+TARGET_CLASS_B_NAME = "B"</code></pre>
+            <p>若模型中的類別名稱不是 A/B，需要同步調整此處，否則系統會找不到對應類別。</p>
+          </div>
+        </section>
+
+        <section class="panel" id="output" role="tabpanel" aria-labelledby="tab-output">
+          <div class="section">
+            <h2>輸出資料與語音提示</h2>
+            <h3>CSV 檔案</h3>
+            <p>CSV 會在第一次計數事件發生時建立，檔名格式為 <code>count_YYYYMMDD_HHMMSS.csv</code>。預設輸出位置為 <code>logs/</code>。</p>
+            <table>
+              <thead>
+                <tr><th>欄位</th><th>說明</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><code>count</code></td><td>A 物件累計總計數。</td></tr>
+                <tr><td><code>track_id</code></td><td>A 物件的追蹤 ID，已由系統重映射為連續 ID。</td></tr>
+                <tr><td><code>timestamp</code></td><td>Unix 時間戳，單位為秒。</td></tr>
+                <tr><td><code>datetime</code></td><td>可讀日期時間，含毫秒。</td></tr>
+                <tr><td><code>mode</code></td><td>事件發生時的計數模式。</td></tr>
+                <tr><td><code>has_b</code></td><td>計數當下 A 的 BBox 內是否含有 B。</td></tr>
+                <tr><td><code>count_with_b</code></td><td>含 B 的 A 累計數。</td></tr>
+                <tr><td><code>count_no_b</code></td><td>無 B 的 A 累計數。</td></tr>
+              </tbody>
+            </table>
+
+            <h3>語音提示</h3>
+            <p>啟用語音提示後，新計數事件發生時會非同步播放音檔，不會阻塞推論流程。</p>
+            <table>
+              <thead>
+                <tr><th>事件狀態</th><th>播放音檔</th><th>放置位置</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>含 B</td><td><code>B.wav</code></td><td><code>voice-wav/</code></td></tr>
+                <tr><td>無 B</td><td><code>NO_B.wav</code></td><td><code>voice-wav/</code></td></tr>
+              </tbody>
+            </table>
+            <div class="callout warning">
+              若音檔不存在，程式不會中斷推論，只會在狀態列提示找不到對應音檔。
+            </div>
+          </div>
+        </section>
+
+        <section class="panel" id="architecture" role="tabpanel" aria-labelledby="tab-architecture">
+          <div class="section">
+            <h2>程式架構</h2>
+            <p class="lead">系統採用 GUI 主執行緒與影像推論執行緒分離的設計。GUI 透過 Qt Signal/Slot 接收幀資料，避免長時間推論阻塞操作介面。</p>
+
+            <div class="architecture" aria-label="程式資料流">
+              <div class="node"><strong>mainAPP.py</strong><span>建立 QApplication 與 MainWindow。</span></div>
+              <div class="node"><strong>MainWindow</strong><span>整合控制面板、影像畫面、ROI 編輯與 Dashboard。</span></div>
+              <div class="node"><strong>VideoThread</strong><span>讀取影像、執行推論、更新計數。</span></div>
+              <div class="node"><strong>Inference / Counter</strong><span>YOLOv8 + ByteTrack 偵測與事件判斷。</span></div>
+              <div class="node"><strong>CSV / Dashboard</strong><span>輸出紀錄並更新使用者介面。</span></div>
+            </div>
+
+            <h3>主要檔案</h3>
+            <table>
+              <thead>
+                <tr><th>檔案</th><th>責任</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><code>mainAPP.py</code></td><td>程式入口，初始化 Qt App。</td></tr>
+                <tr><td><code>config.py</code></td><td>全域常數、類別名稱、顏色、設定資料結構。</td></tr>
+                <tr><td><code>core/video_source.py</code></td><td>封裝影片、RTSP、USB 攝影機來源。</td></tr>
+                <tr><td><code>core/inference.py</code></td><td>YOLOv8 推論、ByteTrack 追蹤、A/B 分流、ID 重映射。</td></tr>
+                <tr><td><code>core/counter.py</code></td><td>Trip Wire / ROI 計數與 B 是否落在 A 框內的判斷。</td></tr>
+                <tr><td><code>core/csv_logger.py</code></td><td>事件式 CSV 記錄。</td></tr>
+                <tr><td><code>gui/main_window.py</code></td><td>主視窗、執行緒生命週期、設定讀寫、語音提示。</td></tr>
+                <tr><td><code>gui/video_widget.py</code></td><td>影像顯示、BBox/ROI/Trip Wire 繪製、滑鼠座標轉換。</td></tr>
+                <tr><td><code>gui/control_panel.py</code></td><td>來源、模型、計數模式與操作按鈕。</td></tr>
+                <tr><td><code>gui/dashboard.py</code></td><td>總計數、子統計、FPS、歷史事件表格。</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="panel" id="faq" role="tabpanel" aria-labelledby="tab-faq">
+          <div class="section">
+            <h2>疑難排解</h2>
+
+            <h3>啟動後模型載入失敗</h3>
+            <p>請確認 <code>model_path</code> 指向存在的 <code>.pt</code> 檔案，且 Python 環境已安裝 <code>ultralytics</code>。如果使用 GPU，也需確認 CUDA 與 PyTorch 環境相容。</p>
+
+            <h3>畫面有偵測框但沒有計數</h3>
+            <p>先確認目前模式是否與已繪製的區域一致。Trip Wire 模式需要設定絆線，ROI Enter 模式需要設定至少三點的 ROI。Trip Wire 目前只計算向右穿越。</p>
+
+            <h3>找不到 A 或 B 類別</h3>
+            <p>系統會依 <code>config.py</code> 中的 <code>TARGET_CLASS_NAME</code> 與 <code>TARGET_CLASS_B_NAME</code> 搜尋模型類別。若模型類別名稱不同，請修改為模型實際名稱。</p>
+
+            <h3>RTSP 無法連線</h3>
+            <p>請確認 RTSP URL、帳號密碼、網路連線、防火牆與攝影機串流設定。Ubuntu 上也需留意 OpenCV 是否具備 FFmpeg 支援。</p>
+
+            <h3>語音沒有播放</h3>
+            <p>請確認右側面板已勾選語音提示，並確認 <code>B.wav</code> 與 <code>NO_B.wav</code> 位於 <code>voice-wav/</code> 資料夾。Windows 使用 <code>winsound</code>；Ubuntu 會尋找 <code>paplay</code>、<code>aplay</code>、<code>pw-play</code> 或 <code>ffplay</code>。</p>
+
+            <h3>需要重新開始計數</h3>
+            <p>Dashboard 提供重置按鈕，會要求輸入密碼 <code>000</code>。重置目前會清除顯示計數與歷史表格，並建立新的 CSV session。</p>
+
+            <div class="callout danger">
+              若要改動計數方向、清除 ID 的時機、或把 A/B 關聯改成 IoU 面積判斷，請優先檢查 <code>core/counter.py</code> 與 <code>core/inference.py</code>。
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <p>文件版本：依目前專案程式碼產生。主要入口：<code>mainAPP.py</code>。視窗標題：<code>AI智捷方舟-WeiLiang</code>。</p>
+    </footer>
+  </div>
+
+  <script>
+    const tabButtons = Array.from(document.querySelectorAll(".tab-button"));
+    const panels = Array.from(document.querySelectorAll(".panel"));
+
+    function activateTab(tabId, updateHash = true) {
+      tabButtons.forEach((button) => {
+        const isActive = button.dataset.tab === tabId;
+        button.setAttribute("aria-selected", String(isActive));
+        button.tabIndex = isActive ? 0 : -1;
+      });
+
+      panels.forEach((panel) => {
+        panel.classList.toggle("active", panel.id === tabId);
+      });
+
+      if (updateHash) {
+        history.replaceState(null, "", "#" + tabId);
+      }
+
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    tabButtons.forEach((button, index) => {
+      button.addEventListener("click", () => activateTab(button.dataset.tab));
+      button.addEventListener("keydown", (event) => {
+        if (event.key !== "ArrowDown" && event.key !== "ArrowUp" && event.key !== "ArrowRight" && event.key !== "ArrowLeft") {
+          return;
+        }
+
+        event.preventDefault();
+        const direction = event.key === "ArrowDown" || event.key === "ArrowRight" ? 1 : -1;
+        const nextIndex = (index + direction + tabButtons.length) % tabButtons.length;
+        tabButtons[nextIndex].focus();
+        activateTab(tabButtons[nextIndex].dataset.tab);
+      });
+    });
+
+    const initialTab = location.hash.replace("#", "");
+    if (initialTab && document.getElementById(initialTab)) {
+      activateTab(initialTab, false);
+    }
+  </script>
+</body>
+</html>
