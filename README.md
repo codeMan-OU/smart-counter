@@ -9,7 +9,7 @@
   支援本地影片、RTSP 串流、USB 攝影機、Trip Wire 穿越計數、ROI 進入計數、A/B 類別判斷、語音提示與 CSV 紀錄。
 </p>
 
-![系統畫面](gui/test.jpg)
+![系統畫面](gui/Demo.png)
 
 ## 專案特色
 
