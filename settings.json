@@ -17,7 +17,7 @@
   "confidence_threshold": 0.5,
   "count_with_b_name": "範例:母豬(B特徵模擬)",
   "count_no_b_name": "範例:公豬",
-  "last_count": 28,
-  "last_count_with_b": 11,
-  "last_count_no_b": 17
+  "last_count": 4056,
+  "last_count_with_b": 1355,
+  "last_count_no_b": 2701
 }
