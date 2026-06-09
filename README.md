@@ -3,10 +3,6 @@
 ![系統畫面](gui/Demo.png)
 
 <p align="center">
-  #<img src="gui/logo.png" alt="AI智捷方舟 Logo" width="180">
-</p>
-
-<p align="center">
   <strong>基於 YOLOv8 + ByteTrack 的 AI 影像計數桌面系統</strong><br>
   支援本地影片、RTSP 串流、USB 攝影機、Trip Wire 穿越計數、ROI 進入計數、A/B 類別判斷、語音提示與 CSV 紀錄。
 </p>
