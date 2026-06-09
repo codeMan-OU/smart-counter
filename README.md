@@ -3,7 +3,7 @@
 ![系統畫面](gui/Demo.png)
 
 <p align="center">
-  <img src="gui/logo.png" alt="AI智捷方舟 Logo" width="180">
+  #<img src="gui/logo.png" alt="AI智捷方舟 Logo" width="180">
 </p>
 
 <p align="center">
